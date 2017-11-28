@@ -19,7 +19,7 @@
 
 (defn show-depbranches
   "Returns a list of the current branch's dependent branches."
-  ([] (show (get-current-branch)))
+  ([] (show-depbranches (get-current-branch)))
   ([branch-name]
    (let [config-key (depbranch-conf-key branch-name)
          res (shell/sh "git" "config" "--get-all" config-key)]
@@ -65,7 +65,34 @@
        (let [commit-msg (str "Merging " base-branch " into " branch-name)]
          (shell/sh "git" "merge" "-m" commit-msg base-branch))))))
 
+(defn depbranch-dispatch [& args] (first args))
+
+(defmulti depbranch depbranch-dispatch)
+
+(defmethod depbranch "show"
+  [_ & rest] (apply show-depbranches rest))
+
+(defmethod depbranch "add"
+  [_ new-branch] (add-depbranch new-branch))
+
+(defmethod depbranch "remove"
+  [_ branch] (remove-depbranch branch))
+
+(defmethod depbranch "base-branch"
+  [_ & rest] (apply get-base-branch rest))
+
+(defmethod depbranch "update-base"
+  [_ & rest] (apply update-base-branch rest))
+
+(defmethod depbranch :default
+  [command & _] (println (str "Unsupported command: " command)))
+
+(defn run-depbranch
+  [& args]
+  (let [result (depbranch args)]
+    (println result)))
+
 (defn -main
   "I don't do a whole lot ... yet."
   [& args]
-  (println "Hello, World!"))
+  (apply run-depbranch args))
