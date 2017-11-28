@@ -88,6 +88,7 @@
   [command & _] (println (str "Unsupported command: " command)))
 
 (defn run-depbranch
+  "Runs the depbranch utility with the provided args, and prints the result."
   [& args]
   (let [result (depbranch args)]
     (println result)))
