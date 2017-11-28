@@ -65,7 +65,9 @@
        (let [commit-msg (str "Merging " base-branch " into " branch-name)]
          (shell/sh "git" "merge" "-m" commit-msg base-branch))))))
 
-(defn depbranch-dispatch [& args] (first args))
+(defn depbranch-dispatch
+  [command & _]
+  command)
 
 (defmulti depbranch
   "Dispatches to the correct depbranch implementation method."
@@ -89,13 +91,11 @@
 (defmethod depbranch :default
   [command & _] (println (str "Unsupported command: " command)))
 
-(defn run-depbranch
+(defn -main
   "Runs the depbranch utility with the provided args, and prints the result."
   [& args]
-  (let [result (depbranch args)]
-    (println result)))
-
-(defn -main
-  "I don't do a whole lot ... yet."
-  [& args]
-  (apply run-depbranch args))
+  (try
+    (when-let [result (apply depbranch args)]
+      (println result))
+    (finally
+      (shutdown-agents))))
