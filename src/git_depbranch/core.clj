@@ -67,7 +67,9 @@
 
 (defn depbranch-dispatch [& args] (first args))
 
-(defmulti depbranch depbranch-dispatch)
+(defmulti depbranch
+  "Dispatches to the correct depbranch implementation method."
+  depbranch-dispatch)
 
 (defmethod depbranch "show"
   [_ & rest] (apply show-depbranches rest))
