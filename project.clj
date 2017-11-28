@@ -7,7 +7,6 @@
   :main git-depbranch.core
   :aot [git-depbranch.core]
   :bin {:name "git-depbranch"
-        :bin-path "/Users/miles/dotfiles/bin"
         :jvm-opts ["-Dfile.encoding=UTF-8"]}
   :target-path "target/%s"
   :profiles {:uberjar {:aot :all}
