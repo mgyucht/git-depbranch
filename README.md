@@ -49,7 +49,7 @@ In this example, suppose that we have branches `a` and `b`, where `a` depends on
 ```shell
 $ git checkout a
 Switched to branch 'a'
-$ git depbranch show                      # empty result
+$ git depbranch show          # empty result
 $ git depbranch add b
 $ git depbranch show
 [b]
