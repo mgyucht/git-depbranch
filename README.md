@@ -28,12 +28,10 @@ automated. In particular:
 
 ## Installation
 
-Download from http://example.com/FIXME.
-
-## Usage
-
 Run `lein bin` and add the executable in
 `target/base+system+user+dev/git-depbranch` to your path.
+
+## Usage
 
 | Command                           | Explanation                                                                                                        |
 | --------------------------------- | -------------------------------------------------------------------------------------------------------------------- |
