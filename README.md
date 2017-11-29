@@ -76,7 +76,6 @@ $ git depbranch update-base   # merges 'b' and 'c' into 'a_db_base', then merges
 
 - Currently, the base branch into which dependent branches are merged is always
   called `<branchname>_db_base`. This should be configurable per branch.
-- There is no help command.
 - There is no validation that you are not adding a branch which does not exist.
 
 ## License
