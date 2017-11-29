@@ -18,16 +18,53 @@
     (when (= 0 (:exit res))
       (string/trim (:out res)))))
 
+(defn parse-depbranch-args
+  "Parse args according to command-spec."
+  [args command-spec]
+  (let [{:keys [options arguments errors]} (cli/parse-opts args command-spec)
+        error (cond
+                errors (first errors)
+                (> (count arguments) 1) (str "Too many arguments: " arguments)
+                :else nil)
+        branch-name (when-not error (first arguments))
+        options (when-not error options)]
+    {:branch-name branch-name
+     :options options
+     :error error}))
+
+(defn print-error-and-exit
+  "Prints the provided error and exits with exit code 1."
+  [error]
+  (println error)
+  (System/exit 1))
+
+(def SHOW-SPEC [[nil "--recursive" "Recursively get depbranches" :default false]])
+
+(defn get-depbranches-for-branch
+  [branch-name recursive?]
+  (let [config-key (depbranch-conf-key branch-name)
+        res (shell/sh "git" "config" "--get-all" config-key)
+        depbranches (when (= 0 (:exit res))
+                      (-> (:out res)
+                          string/trim
+                          (string/split #"\n")))]
+    (if (and depbranches recursive?)
+      (concat depbranches
+              (mapcat #(get-depbranches-for-branch % recursive?)
+                      depbranches))
+      depbranches)))
+
 (defn show-depbranches
-  "Returns a list of the current branch's dependent branches."
-  ([] (show-depbranches (get-current-branch)))
-  ([branch-name]
-   (let [config-key (depbranch-conf-key branch-name)
-         res (shell/sh "git" "config" "--get-all" config-key)]
-     (when (= 0 (:exit res))
-       (-> (:out res)
-           string/trim
-           (string/split #"\n"))))))
+  "Returns a list of the current branch's dependent branches as a string."
+  ([& args]
+   (let [{:keys [branch-name options error]} (parse-depbranch-args args SHOW-SPEC)]
+     (if error
+       (print-error-and-exit error)
+       (let [branch-name (or branch-name
+                             (get-current-branch))
+             recursive? (:recursive options)]
+         (->> (get-depbranches-for-branch branch-name recursive?)
+             (string/join "\n")))))))
 
 (defn add-depbranch
   "Adds the specified branch as a dependent branch for the current branch."
@@ -94,7 +131,7 @@
 
 (def USAGE
   "The usage text for git-depbranch."
-  "usage: git depbranch show [<branch-name>]
+  "usage: git depbranch show [--recursive] [<branch-name>]
    or: git depbranch add <branch-name>
    or: git depbranch remove <branch-name>
    or: git depbranch base-branch [<branch-name>]
@@ -108,7 +145,7 @@ Generic options
 (defn run-depbranch
   "Parse arguments and run git-depbranch."
   [args]
-  (let [{:keys [options arguments]} (cli/parse-opts args CLI-SPEC)]
+  (let [{:keys [options arguments]} (cli/parse-opts args CLI-SPEC :in-order true)]
     (cond
       (:help options)
       (println USAGE)
