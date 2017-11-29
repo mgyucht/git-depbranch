@@ -1,6 +1,7 @@
 (ns git-depbranch.core
   (:require [clojure.java.shell :as shell]
-            [clojure.string :as string])
+            [clojure.string :as string]
+            [clojure.tools.cli :as cli])
   (:gen-class))
 
 (def BASE-BRANCH-SUFFIX "_db_base")
@@ -91,11 +92,35 @@
 (defmethod depbranch :default
   [command & _] (println (str "Unsupported command: " command)))
 
+(def USAGE
+  "The usage text for git-depbranch."
+  "usage: git depbranch show [<branch-name>]
+   or: git depbranch add <branch-name>
+   or: git depbranch remove <branch-name>
+   or: git depbranch base-branch [<branch-name>]
+   or: git depbranch update-base [<branch-name>]
+
+Generic options
+    -h, --help  Print this help message")
+
+(def CLI-SPEC [["-h" "--help" "Print the help message" :default false]])
+
+(defn run-depbranch
+  "Parse arguments and run git-depbranch."
+  [args]
+  (let [{:keys [options arguments]} (cli/parse-opts args CLI-SPEC)]
+    (cond
+      (:help options)
+      (println USAGE)
+
+      :else
+      (when-let [result (apply depbranch arguments)]
+        (println result)))))
+
 (defn -main
   "Runs the depbranch utility with the provided args, and prints the result."
   [& args]
   (try
-    (when-let [result (apply depbranch args)]
-      (println result))
+    (run-depbranch args)
     (finally
       (shutdown-agents))))

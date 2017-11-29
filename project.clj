@@ -3,9 +3,9 @@
   :url "https://github.com/mgyucht/git-depbranch"
   :license {:name "MIT License"
             :url "http://www.opensource.org/licenses/mit-license.php"}
-  :dependencies [[org.clojure/clojure "1.8.0"]]
+  :dependencies [[org.clojure/clojure "1.8.0"]
+                 [org.clojure/tools.cli "0.3.5"]]
   :main git-depbranch.core
-  :aot [git-depbranch.core]
   :bin {:name "git-depbranch"
         :jvm-opts ["-Dfile.encoding=UTF-8"]}
   :target-path "target/%s"
