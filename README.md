@@ -52,7 +52,7 @@ Switched to branch 'a'
 $ git depbranch show          # empty result
 $ git depbranch add b
 $ git depbranch show
-[b]
+b
 $ git checkout b
 Switched to branch 'b'
 
@@ -68,6 +68,9 @@ Now, suppose we add a new feature upon which `a` depends, called `c`.
 $ git checkout 'a'
 Switched to branch 'a'
 $ git depbranch add 'c'
+$ git depbranch show a
+b
+c
 $ git depbranch update-base   # merges 'b' and 'c' into 'a_db_base', then merges
                               # 'a_db_base' into 'a'.
 ```
