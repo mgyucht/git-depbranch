@@ -35,11 +35,11 @@ Run `lein bin` and add the executable in
 
 | Command                           | Explanation                                                                                                        |
 | --------------------------------- | -------------------------------------------------------------------------------------------------------------------- |
-| git depbranch show [branchname]   | Show all of the branches that the current branch is dependent on.                                                  |
-| git depbranch add <branchname>    | Add <branchname> as a dependent branch for the current branch.                                                     |
-| git depbranch remove <branchname> | Remove <branchname> as a dependent branch for the current branch.                                                  |
-| git depbranch base-branch         | Print the name of the base branch for the current branch.                                                          |
-| git depbranch update-base         | Creates a base branch for the current branch, and recursively updates it by traversing the branch dependency tree. |
+| `git depbranch show [branchname]`   | Show all of the branches that the current branch is dependent on.                                                  |
+| `git depbranch add <branchname>`   | Add <branchname> as a dependent branch for the current branch.                                                     |
+| `git depbranch remove <branchname>` | Remove <branchname> as a dependent branch for the current branch.                                                  |
+| `git depbranch base-branch`       | Print the name of the base branch for the current branch.                                                          |
+| `git depbranch update-base`        | Creates a base branch for the current branch, and recursively updates it by traversing the branch dependency tree. |
 
 ## Examples
 
