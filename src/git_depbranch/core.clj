@@ -89,7 +89,7 @@
   "Updates the base branch for the current branch."
   ([] (update-base-branch (get-current-branch)))
   ([branch-name]
-   (when-let [dep-branches (show-depbranches branch-name)]
+   (when-let [dep-branches (get-depbranches-for-branch branch-name false)]
      (doseq [branch dep-branches]
        (update-base-branch branch))
      (let [base-branch (get-base-branch branch-name)
