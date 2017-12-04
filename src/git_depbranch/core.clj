@@ -94,14 +94,17 @@
        (update-base-branch branch))
      (let [base-branch (get-base-branch branch-name)
            [first-branch & other-branches] dep-branches]
+       (println "Updating" base-branch "to include branches:" dep-branches)
        (shell/sh "git" "checkout" first-branch)
        (shell/sh "git" "checkout" "-B" base-branch)
        (doseq [branch other-branches]
          (let [commit-msg (str "Merging " branch " into " base-branch)]
            (shell/sh "git" "merge" "-m" commit-msg branch)))
+       (println "Merging" base-branch "into" branch-name)
        (shell/sh "git" "checkout" branch-name)
        (let [commit-msg (str "Merging " base-branch " into " branch-name)]
-         (shell/sh "git" "merge" "-m" commit-msg base-branch))))))
+         (shell/sh "git" "merge" "-m" commit-msg base-branch)))
+     nil)))
 
 (defn depbranch-dispatch
   [command & _]
